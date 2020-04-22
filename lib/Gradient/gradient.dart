@@ -1,10 +1,11 @@
 import 'dart:math';
-
+import 'package:share/share.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:neon/Global/global.dart';
 import 'package:neon/colorpicker/code.dart';
-
+import 'package:path/path.dart';
+var b,c;
 DataSnapshot s;
 class Gradient1 extends StatefulWidget {
   @override
@@ -91,7 +92,7 @@ return'success';
                 ),
               ),
               onLongPress: (){
-
+               // share(context,gradient2[index],gradient1[index]);
               },
             ),
           ),
@@ -100,4 +101,9 @@ return'success';
       ),
     );
   }
+ /* void share(BuildContext context ,b,c){
+    final RenderBox box =context.findRenderObject();
+    final Widget 
+       // Share.share()
+  }*/
 }

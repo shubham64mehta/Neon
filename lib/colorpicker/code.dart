@@ -49,8 +49,8 @@ void _showdialog(var x) {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
                 onPressed: (){
                 uploadtoStorage(x);
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()));
-                
+                //Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()));
+                Navigator.pop(context);
               },
               child:Text("Save"),
               ),

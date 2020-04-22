@@ -34,7 +34,8 @@ Future<String>read()async {
     //Ek cheee bata a hu. database ke values hamesha camel case me honge which is first word is small and se ek second kya
     Map <dynamic,dynamic> values;
     values = snapshot.value;
-    color.clear();//Run kar wait
+    color.clear();
+    array.clear();//Run kar wait
     values.forEach((key,value){
        FirebaseDatabase.instance.reference().child("User").child(key).child("Hexcolor").once().then((DataSnapshot s){//run
          color.add(Color(s.value));
@@ -145,6 +146,9 @@ void choosecolor(){
                 showCupertinoModalPopup(context: context, 
                 builder: (BuildContext context)=>
                 CupertinoActionSheet(
+                   message:  Text("Press yes and select a color different from the previous one",
+                     style: TextStyle(fontWeight:FontWeight.bold,color:Colors.grey),
+                  ),
                   title: Text("Convert it into gradient",
                   style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
                   ),
