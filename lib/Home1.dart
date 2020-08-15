@@ -1,11 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:neon/main.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
 import 'colorpicker/code.dart';
 
 
@@ -54,6 +50,7 @@ class _CameraAppState extends State<CameraApp> {
   @override
   Widget build(BuildContext context) {
   return Scaffold(
+    backgroundColor: Colors.black,
     body: Stack(
       children: <Widget>[
         FutureBuilder<void>(
@@ -95,92 +92,12 @@ class _CameraAppState extends State<CameraApp> {
         ),
                         
           ),
-         /* Positioned(
-            right:MediaQuery.of(context).size.width/0.5,
-            left: 20,
-            bottom: 208,
-            
-            child: IconButton(icon: Icon(Icons.switch_camera,size:30,), onPressed:(){
-              
-            },
-            
-            )
-            
-          ),*/
+         
       ],
     ),
-      /*floatingActionButton: FloatingActionButton(
-        elevation: 15,
-        autofocus: true,
-
-        child: Icon(Icons.camera_alt),
-        onPressed: ()async{
-          try{
-            await initializedControllerFuture;
-            final path =join(
-              (await getTemporaryDirectory()).path,
-              '${DateTime.now()}.png'
-            );
-            await controller.takePicture(path);
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>DisplayPictureScreen(imagePath:path)),);
-          }catch(e){
-            print(e);
-          }
-        }),*/
+      
   );
   }
 
 
-/*Future<void> oncameraswitch() async{
-  final CameraDescription cameraDescription =(controller.description == cameras[0])?cameras[1] :cameras[0];
-  if(controller!=null){
-    await controller.dispose();
-  }
-  controller=CameraController(cameraDescription, ResolutionPreset.ultraHigh);
-  controller.addListener((){
-    if(mounted)setState(() {
-      
-    });
-    if(controller.value.hasError){
-      showInSnackBar('Camera error ${controller.value.errorDescription}');
-    }
-  });
-  try{
-    await controller.initialize();
-  }on CameraException catch(e){
-    showCameraException(e);
-  }
-  if(mounted){
-    setState(() {
-      
-    });
-  }
-}
-void showCameraException(CameraException e) {
-    logError(e.code, e.description);
-    showInSnackBar('Error: ${e.code}\n${e.description}');
-  }
-  void logError(String code, String message) =>
-      print('Error: $code\nError Message: $message');
-
- void showInSnackBar(String message) {
-    scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));
-  }*/
-
-}
-// A widget that displays the picture taken by the user.
-class DisplayPictureScreen extends StatelessWidget {
-  final String imagePath;
-
- DisplayPictureScreen({ this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Display the Picture')),
-      // The image is stored as a file on the device. Use the `Image.file`
-      // constructor with the given path to display the image.
-      body: Image.file(File(imagePath)),
-    );
-  }
 }

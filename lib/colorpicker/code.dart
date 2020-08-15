@@ -1,80 +1,31 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:firebase_database/firebase_database.dart';
-import 'package:neon/Database/database.dart';
 import 'package:neon/Global/global.dart';
-import 'package:neon/Mainscreen.dart';
-import 'package:path/path.dart' show join;
-import 'package:path_provider/path_provider.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as img;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:uuid/uuid.dart';
 
+var y;
 Color selectedColor;
-var uid=Uuid();
+var uid = Uuid();
 FirebaseDatabase database = new FirebaseDatabase();
 
 class ColorPickerWidget extends StatefulWidget {
-  final String imagePath ;
+  final String imagePath;
   ColorPickerWidget({this.imagePath});
   @override
   _ColorPickerWidgetState createState() => _ColorPickerWidgetState();
 }
 
 class _ColorPickerWidgetState extends State<ColorPickerWidget> {
-   
   GlobalKey imageKey = GlobalKey();
   GlobalKey paintKey = GlobalKey();
-void _showdialog(var x) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retusirn object of type Dialog
-        return  AlertDialog(
-          elevation:20.0,
 
-            content: Text("Want to Save the Color",
-            style: TextStyle(fontSize:15.0,fontWeight:FontWeight.w500),
-            ),
-            actions: <Widget>[
-              RaisedButton(
-                elevation: 15.0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                onPressed: (){
-                uploadtoStorage(x);
-                //Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()));
-                Navigator.pop(context);
-              },
-              child:Text("Save"),
-              ),
-                RaisedButton(
-                  elevation: 15.0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                  onPressed: (){
-                Navigator.pop(context);
-                
-              },
-              child:Text("Cancel"),
-              )
-            ],
-              
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
-              contentPadding:EdgeInsets.all(10.0) ,     
-            
-            );
-        
-      },
-    );
-  }
-  
- 
   // CHANGE THIS FLAG TO TEST BASIC IMAGE, AND SNAPSHOT.
   bool useSnapshot = true;
 
@@ -111,10 +62,50 @@ void _showdialog(var x) {
                     },
                     onPanUpdate: (details) {
                       searchPixel(details.globalPosition);
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Text(
+                              "Want to Save the Color",
+                              style: TextStyle(
+                                  fontSize: 15.0, fontWeight: FontWeight.w500),
+                            ),
+                            actions: <Widget>[
+                              RaisedButton(
+                                elevation: 15.0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0)),
+                                onPressed: () {
+                                  uploadtoStorage(y);
+                                  Navigator.popAndPushNamed(context, '/Home1');
+                                  //Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen1()));
+                                  //Navigator.pop(context);
+                                },
+                                child: Text("Save"),
+                              ),
+                              RaisedButton(
+                                elevation: 15.0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0)),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("Cancel"),
+                              )
+                            ],
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14.0)),
+                            contentPadding: EdgeInsets.all(10.0),
+                          );
+                        },
+                      );
                     },
                     child: Container(
-                      child: Image.file(File(widget.imagePath),
-                      key: imageKey,
+                      child: Image.file(
+                        File(widget.imagePath),
+                        key: imageKey,
                         //scale: .8,
                         fit: BoxFit.fill,
                       ),
@@ -176,11 +167,10 @@ void _showdialog(var x) {
     //print(selectedColor);
 
     _stateController.add(Color(hex));
-    if(hex.isFinite){
-      _showdialog(hex);
+    if (hex.isFinite) {
+      y = hex;
     }
     // uploadtoStorage();
-     
   }
 
   Future<void> loadImageBundleBytes() async {
@@ -208,73 +198,75 @@ void _showdialog(var x) {
 int abgrToArgb(int argbColor) {
   int r = (argbColor >> 16) & 0xFF;
   int b = argbColor & 0xFF;
-  var c=(argbColor & 0xFF00FF00) | (b << 16) | r;
-      //uploadtoStorage(c);
-      return c;
-    }
-    
-    
+  var c = (argbColor & 0xFF00FF00) | (b << 16) | r;
+  //uploadtoStorage(c);
+  return c;
+}
 
+Future uploadtoStorage(var d) async {
+  try {
+    final DateTime now = DateTime.now();
+    final int millSeconds = now.millisecondsSinceEpoch;
+    final String month = now.month.toString();
+    final String date = now.day.toString();
+    final String storageId = (millSeconds.toString() + uid.toString());
+    final String today = ('$month-$date');
 
-Future uploadtoStorage(var d) async{
-  try{
-     final DateTime now = DateTime.now();
-  final int millSeconds = now.millisecondsSinceEpoch;
-  final String month = now.month.toString();
-  final String date = now.day.toString();
-  final String storageId = (millSeconds.toString() + uid.toString());
-  final String today = ('$month-$date'); 
-
-  var file =  d;
- add(file);
-  }catch(error){
+    var file = d;
+    add(file);
+  } catch (error) {
     print(error);
   }
 }
 
-Future<void> add(var color1) async{
+Future<void> add(var color1) async {
   var uuid = new Uuid().v1();
-  DatabaseReference  _color2 = database.reference().child("User").child(uuid);
-  final TransactionResult transactionResult = await _color2.runTransaction((MutableData mutableData) async {
-      mutableData.value = (mutableData.value ?? 0) + 1;
+  DatabaseReference _color2 = database.reference().child("User").child(uuid);
+  final TransactionResult transactionResult =
+      await _color2.runTransaction((MutableData mutableData) async {
+    mutableData.value = (mutableData.value ?? 0) + 1;
 
-      return mutableData;
+    return mutableData;
+  });
+  if (transactionResult.committed) {
+    _color2.push().set(<String, String>{
+      "Hexcolor": "true",
+    }).then((_) {
+      print('Transaction  committed.');
     });
-        if (transactionResult.committed) {
-      _color2.push().set(<String, String>{
-        "Hexcolor": "true",
-      }).then((_) {
-        print('Transaction  committed.');
-       
-      });
-    } else {
-      print('Transaction not committed.');
-      if (transactionResult.error != null) {
-        print(transactionResult.error.message);
-      }
+  } else {
+    print('Transaction not committed.');
+    if (transactionResult.error != null) {
+      print(transactionResult.error.message);
     }
-     _color2.set(
-      {
-        "Hexcolor": color1,
-      }
-    );
-    //read();
-   
+  }
+  _color2.set({
+    "Hexcolor": color1,
+  });
+  //read();
 }
-Future<String>read()async{
-  FirebaseDatabase.instance.reference().child("User").once().then((DataSnapshot snapshot){
-    Map <dynamic,dynamic> values;
+
+Future<String> read() async {
+  FirebaseDatabase.instance
+      .reference()
+      .child("User")
+      .once()
+      .then((DataSnapshot snapshot) {
+    Map<dynamic, dynamic> values;
     values = snapshot.value;
-    values.forEach((key,value){
-       FirebaseDatabase.instance.reference().child("User").child(key).child("Hexcolor").once().then((DataSnapshot s){//run
-         array.add(s.value);
-      
+    values.forEach((key, value) {
+      FirebaseDatabase.instance
+          .reference()
+          .child("User")
+          .child(key)
+          .child("Hexcolor")
+          .once()
+          .then((DataSnapshot s) {
+        //run
+        array.add(s.value);
+      });
+      //print(value);
+    });
   });
-    //print(value);
-  });
-
-  
-});
-return'success';
+  return 'success';
 }
-

@@ -1,4 +1,4 @@
-package com.example.neon
+package com.shubham123.neon
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

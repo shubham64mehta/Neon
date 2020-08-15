@@ -1,89 +1,33 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:firebase_database/firebase_database.dart';
-//import 'package:neon/Database/database.dart';
-//import 'package:neon/Global/global.dart';
-//import 'package:neon/Mainscreen.dart';
-//import 'package:neon/usermode/Home/home.dart';
-//import 'package:neon/usermode/global/global1.dart';
-import 'package:neon/usermode/google/google.dart';
-//import 'package:path/path.dart' show join;
-//import 'package:path_provider/path_provider.dart';
-
+import 'package:neon/usermode/global/global1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as img;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:uuid/uuid.dart';
 
+var y;
+Color b;
 Color selectedColor;
-var uid=Uuid();
+var uid = Uuid();
 FirebaseDatabase database = new FirebaseDatabase();
 
 class ColorPickerWidget1 extends StatefulWidget {
-  final String imagePath ;
+  final String imagePath;
   ColorPickerWidget1({this.imagePath});
   @override
   _ColorPickerWidgetState createState() => _ColorPickerWidgetState();
 }
 
 class _ColorPickerWidgetState extends State<ColorPickerWidget1> {
-   
   GlobalKey imageKey = GlobalKey();
   GlobalKey paintKey = GlobalKey();
-void _showdialog(var x) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retusirn object of type Dialog
-        return  AlertDialog(
-          elevation:20.0,
-
-            content: Text("Want to Save the Color",
-            style: TextStyle(fontSize:15.0,fontWeight:FontWeight.w500),
-            ),
-            actions: <Widget>[
-              RaisedButton(
-                elevation: 15.0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                onPressed: (){
-                uploadtoStorage1(x);
-                //Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen1()));
-              Navigator.pop(context);
-                
-              },
-              child:Text("Save"),
-              ),
-                RaisedButton(
-                  elevation: 15.0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                  onPressed: (){
-                Navigator.pop(context);
-                
-              },
-              child:Text("Cancel"),
-              )
-            ],
-              
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
-              contentPadding:EdgeInsets.all(10.0) ,     
-            
-            );
-        
-      },
-    );
-  }
-  
- 
-  // CHANGE THIS FLAG TO TEST BASIC IMAGE, AND SNAPSHOT.
   bool useSnapshot = true;
 
-  // based on useSnapshot=true ? paintKey : imageKey ;
-  // this key is used in this example to keep the code shorter.
   GlobalKey currentKey;
 
   final StreamController<Color> _stateController = StreamController<Color>();
@@ -115,10 +59,50 @@ void _showdialog(var x) {
                     },
                     onPanUpdate: (details) {
                       searchPixel(details.globalPosition);
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Text(
+                              "Want to Save the Color",
+                              style: TextStyle(
+                                  fontSize: 15.0, fontWeight: FontWeight.w500),
+                            ),
+                            actions: <Widget>[
+                              RaisedButton(
+                                elevation: 15.0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0)),
+                                onPressed: () {
+                                  uploadtoStorage1(y);
+                                  Navigator.popAndPushNamed(context, '/Home3');
+                                  //Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen1()));
+                                  //Navigator.pop(context);
+                                },
+                                child: Text("Save"),
+                              ),
+                              RaisedButton(
+                                elevation: 15.0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0)),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("Cancel"),
+                              )
+                            ],
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14.0)),
+                            contentPadding: EdgeInsets.all(10.0),
+                          );
+                        },
+                      );
                     },
                     child: Container(
-                      child: Image.file(File(widget.imagePath),
-                      key: imageKey,
+                      child: Image.file(
+                        File(widget.imagePath),
+                        key: imageKey,
                         //scale: .8,
                         fit: BoxFit.fill,
                       ),
@@ -178,13 +162,12 @@ void _showdialog(var x) {
     int pixel32 = photo.getPixelSafe(px.toInt(), py.toInt());
     int hex = abgrToArgb(pixel32);
     //print(selectedColor);
-
     _stateController.add(Color(hex));
-    if(hex.isFinite){
-      _showdialog(hex);
+    if (hex.isFinite) {
+      y = hex;
+      //_showdialog(hex, context);
     }
     // uploadtoStorage();
-     
   }
 
   Future<void> loadImageBundleBytes() async {
@@ -212,56 +195,92 @@ void _showdialog(var x) {
 int abgrToArgb(int argbColor) {
   int r = (argbColor >> 16) & 0xFF;
   int b = argbColor & 0xFF;
-  var c=(argbColor & 0xFF00FF00) | (b << 16) | r;
-      //uploadtoStorage(c);
-      return c;
-    }
-    
-    
+  var c = (argbColor & 0xFF00FF00) | (b << 16) | r;
+  //uploadtoStorage(c);
+  return c;
+}
 
+Future uploadtoStorage1(var d) async {
+  try {
+    final DateTime now = DateTime.now();
+    final int millSeconds = now.millisecondsSinceEpoch;
+    final String month = now.month.toString();
+    final String date = now.day.toString();
+    final String storageId = (millSeconds.toString() + uid.toString());
+    final String today = ('$month-$date');
 
-Future uploadtoStorage1(var d) async{
-  try{
-     final DateTime now = DateTime.now();
-  final int millSeconds = now.millisecondsSinceEpoch;
-  final String month = now.month.toString();
-  final String date = now.day.toString();
-  final String storageId = (millSeconds.toString() + uid.toString());
-  final String today = ('$month-$date'); 
-
-  var file =  d;
- add(file);
-  }catch(error){
+    var file = d;
+    add(file);
+  } catch (error) {
     print(error);
   }
 }
 
-Future<void> add(var color1) async{
+Future<void> add(var color1) async {
   var uuid = new Uuid().v1();
-  DatabaseReference  _color2 = database.reference().child("Usermode").child(user1).child(uuid);
-  final TransactionResult transactionResult = await _color2.runTransaction((MutableData mutableData) async {
-      mutableData.value = (mutableData.value ?? 0) + 1;
+  DatabaseReference _color2 =
+      database.reference().child("Usermode").child(user1).child(uuid);
+  final TransactionResult transactionResult =
+      await _color2.runTransaction((MutableData mutableData) async {
+    mutableData.value = (mutableData.value ?? 0) + 1;
 
-      return mutableData;
+    return mutableData;
+  });
+  if (transactionResult.committed) {
+    _color2.push().set(<String, String>{
+      "hexcolor": "true",
+    }).then((_) {
+      print('Transaction  committed.');
     });
-        if (transactionResult.committed) {
-      _color2.push().set(<String, String>{
-        "hexcolor": "true",
-      }).then((_) {
-        print('Transaction  committed.');
-       
-      });
-    } else {
-      print('Transaction not committed.');
-      if (transactionResult.error != null) {
-        print(transactionResult.error.message);
-      }
+  } else {
+    print('Transaction not committed.');
+    if (transactionResult.error != null) {
+      print(transactionResult.error.message);
     }
-     _color2.set(
-      {
-        "hexcolor": color1,
-      }
-    );
-    //read();
-   
+  }
+  _color2.set({
+    "hexcolor": color1,
+  });
+  //read();
+}
+
+void _showdialog(var x, BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: Text(
+          "Want to Save the Color",
+          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500),
+        ),
+        actions: <Widget>[
+          RaisedButton(
+            elevation: 15.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0)),
+            onPressed: () {
+              uploadtoStorage1(x);
+              Navigator.popAndPushNamed(context, '/Home3');
+              //Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen1()));
+              //Navigator.pop(context);
+            },
+            child: Text("Save"),
+          ),
+          RaisedButton(
+            elevation: 15.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("Cancel"),
+          )
+        ],
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
+        contentPadding: EdgeInsets.all(10.0),
+      );
+    },
+  );
 }

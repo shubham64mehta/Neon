@@ -1,14 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:neon/usermode/global/global1.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
-
-String name;
-String email;
-var user1;
-String imageUrl;
 
 Future<String> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -39,11 +35,17 @@ Future<String> signInWithGoogle() async {
 
   assert(!user.isAnonymous);
   assert(await user.getIdToken() != null);
-
   final FirebaseUser currentUser = await _auth.currentUser();
   assert(user.uid == currentUser.uid);
-  user1 =user.uid;
-print(user1);
+  user1 = user.uid;
+  SharedPreferences pref15 = await SharedPreferences.getInstance();
+  pref15.setString("alreadyregistered", user.uid);
+  SharedPreferences pref1 = await SharedPreferences.getInstance();
+  pref1.setString("name", name);
+  SharedPreferences pref2 = await SharedPreferences.getInstance();
+  pref2.setString("image", imageUrl);
+  SharedPreferences pref3 = await SharedPreferences.getInstance();
+  pref3.setString("email", email);
   return 'signInWithGoogle succeeded: $user';
 }
 

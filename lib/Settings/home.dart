@@ -32,6 +32,7 @@ class _HomeState extends State<Home> {
       ),
     );
     return Scaffold(
+      backgroundColor: Colors.black,
     appBar:appbar,
     body:SingleChildScrollView(
           child: Column(

@@ -18,8 +18,7 @@ class _TextAnimState extends State<TextAnim> {
         text: ["Hello","Welcome","To Tiles"],
         textStyle: TextStyle(fontWeight:FontWeight.bold,color:Colors.white,fontSize:70.0),
         onFinished: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>User()));
-
+           Navigator.popAndPushNamed(context, '/Home6');
         },
         
       ),

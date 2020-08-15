@@ -15,11 +15,64 @@
       },
       "oauth_client": [
         {
-          "client_id": "392830090640-7dqkdv6e5oonogfv755fnhdfj0gbujgq.apps.googleusercontent.com",
+          "client_id": "392830090640-d58grvhfeqqpnecg3kvqk75enm7fbfit.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.neon",
-            "certificate_hash": "4901f64c1dcbb79c1d481489adb039da1843e81d"
+            "certificate_hash": "dde8a0dd620228724a0903970d94ecace5f29d7d"
+          }
+        },
+        {
+          "client_id": "392830090640-mh8o2il2j5ju7a55h7bjaqnvnm6sbbhs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmBFuqIQNr0s9EwCnPU48j4tM1qFkKppY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "392830090640-mh8o2il2j5ju7a55h7bjaqnvnm6sbbhs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:392830090640:android:73fdc7411861c9cbbe8715",
+        "android_client_info": {
+          "package_name": "com.shubham123.neon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "392830090640-7gp6ppir8fj0n1i4rg262jphmh9juj55.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shubham123.neon",
+            "certificate_hash": "dde8a0dd620228724a0903970d94ecace5f29d7d"
+          }
+        },
+        {
+          "client_id": "392830090640-so3rbbh9vhptj8gvoi40em94cmr5n6ib.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shubham123.neon",
+            "certificate_hash": "4675926db7dcf0767a83cee85400fbd9bb944cc7"
+          }
+        },
+        {
+          "client_id": "392830090640-oaf9uatjeo8dnglldbficnkpod2rhnul.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shubham123.neon",
+            "certificate_hash": "830c6e0a9183e87f19eb32bb5cda68eb2331b7e4"
           }
         },
         {
